@@ -1,0 +1,12 @@
+History of OS/2-specific changes for iqpuzzle
+===========================================
+10-03-2024
+
+-Updated to latest version 1.2.10
+
+This file contains only OS/2-specific changes. 
+-----------------------------------
+
+- Update source to build 14-03-2024
+- Make a WPS desktop map for iqpuzzle
+- Add ico to exe file
