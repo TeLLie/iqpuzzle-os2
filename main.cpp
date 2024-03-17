@@ -80,8 +80,13 @@ auto main(int argc, char *argv[]) -> int {
   // Default share data path (Windows and debugging)
   QString sSharePath = app.applicationDirPath();
   // Standard installation path (Linux)
+#if defined(Q_OS_OS2)
   QDir tmpDir(app.applicationDirPath() + "/../share/" +
               app.applicationName().toLower());
+#else
+  QDir tmpDir(app.applicationDirPath() + "/@unixroot/usr/share/iqpuzzle" +
+              app.applicationName().toLower());
+#endif
   if (!cmdparser.isSet(enableDebug) && tmpDir.exists()) {
     sSharePath = app.applicationDirPath() + "/../share/" +
                  app.applicationName().toLower();
