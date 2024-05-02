@@ -55,12 +55,18 @@ jobs:
     runs-on: macos-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install Dependencies
       run: |
-       brew install p7zip qt ffsend
-       PATH=/usr/local/opt/qt/bin/:${PATH}
+       brew install p7zip
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.5.*'
+        host: 'mac'
+        target: 'desktop'
 
     - name: Compile
       run: |
@@ -85,4 +91,4 @@ jobs:
     - name: Upload macOS zip
       run: |
        cd build
-       ffsend upload iQPuzzle_*_macOS.zip
+       curl --upload-file ./iQPuzzle_*_macOS.zip https://transfer.adminforge.de/iQPuzzle_macOS.zip

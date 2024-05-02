@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="bg_BG">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="bg">
 <context>
     <name>Board</name>
     <message>
@@ -25,6 +23,11 @@ Reduced grid to default.</source>
         <location filename="../board.cpp" line="90"/>
         <source>Board polygon not valid.</source>
         <translation>Полигонът на дъската не е валиден.</translation>
+    </message>
+    <message>
+        <location filename="../board.cpp" line="185"/>
+        <source>Hint</source>
+        <translation>Помощ</translation>
     </message>
     <message>
         <location filename="../board.cpp" line="186"/>
@@ -57,35 +60,73 @@ Reduced grid to default.</source>
         <source>Invalid start position - using fallback:</source>
         <translation>Невалидна начална позиция - използвайки резервно копие:</translation>
     </message>
-    <message>
-        <location filename="../board.cpp" line="185"/>
-        <source>Hint</source>
-        <translation>Помощ</translation>
-    </message>
 </context>
 <context>
     <name>BoardDialog</name>
     <message>
-        <location filename="../boarddialog.cpp" line="44"/>
-        <location filename="../boarddialog.cpp" line="76"/>
+        <location filename="../boarddialog.cpp" line="46"/>
+        <location filename="../boarddialog.cpp" line="78"/>
         <source>Solutions</source>
         <translation>Решения</translation>
     </message>
     <message>
-        <location filename="../boarddialog.cpp" line="45"/>
+        <location filename="../boarddialog.cpp" line="47"/>
         <source>Preview</source>
         <translation>Преглед</translation>
     </message>
     <message>
-        <location filename="../boarddialog.cpp" line="74"/>
+        <location filename="../boarddialog.cpp" line="52"/>
+        <location filename="../boarddialog.cpp" line="85"/>
+        <source>No preview available</source>
+        <translation>Няма преглед</translation>
+    </message>
+    <message>
+        <location filename="../boarddialog.cpp" line="76"/>
+        <source>Unknown</source>
+        <translation>Непознат</translation>
+    </message>
+</context>
+<context>
+    <name>BoardPreview</name>
+    <message>
+        <location filename="../boardpreview.cpp" line="45"/>
+        <location filename="../boardpreview.cpp" line="48"/>
+        <source>Solved:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../boardpreview.cpp" line="69"/>
         <source>Unknown</source>
         <translation>Непознат</translation>
     </message>
     <message>
-        <location filename="../boarddialog.cpp" line="50"/>
-        <location filename="../boarddialog.cpp" line="83"/>
+        <location filename="../boardpreview.cpp" line="71"/>
+        <source>Solutions</source>
+        <translation>Решения</translation>
+    </message>
+    <message>
+        <location filename="../boardpreview.cpp" line="82"/>
         <source>No preview available</source>
         <translation>Няма преглед</translation>
+    </message>
+</context>
+<context>
+    <name>BoardSelection</name>
+    <message>
+        <location filename="../boardselection.ui" line="14"/>
+        <location filename="../boardselection.cpp" line="121"/>
+        <source>Load board</source>
+        <translation>Зареждане на дъска</translation>
+    </message>
+    <message>
+        <location filename="../boardselection.ui" line="27"/>
+        <source>Open own board...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../boardselection.cpp" line="122"/>
+        <source>Board files</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -130,19 +171,24 @@ Reduced grid to default.</source>
         <translation>Игра</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.ui" line="88"/>
-        <source>&amp;Help</source>
-        <translation>Помощ</translation>
+        <location filename="../iqpuzzle.ui" line="45"/>
+        <source>R&amp;andom game</source>
+        <translation>Случайна игра</translation>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="52"/>
         <source>&amp;All available</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="62"/>
         <source>All &amp;unsolved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../iqpuzzle.ui" line="88"/>
+        <source>&amp;Help</source>
+        <translation>Помощ</translation>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="95"/>
@@ -186,7 +232,7 @@ Reduced grid to default.</source>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="169"/>
-        <location filename="../iqpuzzle.cpp" line="526"/>
+        <location filename="../iqpuzzle.cpp" line="520"/>
         <source>Save game</source>
         <translation>Запис на игра</translation>
     </message>
@@ -197,7 +243,7 @@ Reduced grid to default.</source>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="180"/>
-        <location filename="../iqpuzzle.cpp" line="492"/>
+        <location filename="../iqpuzzle.cpp" line="486"/>
         <source>Load game</source>
         <translation>Зареждане на игра</translation>
     </message>
@@ -225,176 +271,161 @@ Reduced grid to default.</source>
         <location filename="../iqpuzzle.ui" line="223"/>
         <location filename="../iqpuzzle.ui" line="248"/>
         <source>&amp;Easy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="228"/>
         <location filename="../iqpuzzle.ui" line="253"/>
         <source>&amp;Medium</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="233"/>
         <location filename="../iqpuzzle.ui" line="258"/>
         <source>&amp;Hard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="238"/>
         <location filename="../iqpuzzle.ui" line="243"/>
         <source>&amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.ui" line="266"/>
         <source>Sta&amp;tistics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="691"/>
-        <source>Easy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.cpp" line="699"/>
-        <source>Medium</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.cpp" line="707"/>
-        <source>Hard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.ui" line="45"/>
-        <source>R&amp;andom game</source>
-        <translation>Случайна игра</translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.cpp" line="103"/>
-        <location filename="../iqpuzzle.cpp" line="785"/>
+        <location filename="../iqpuzzle.cpp" line="99"/>
+        <location filename="../iqpuzzle.cpp" line="782"/>
         <source>Game paused</source>
         <translation>Играта е на пауза</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="108"/>
-        <location filename="../iqpuzzle.cpp" line="111"/>
-        <location filename="../iqpuzzle.cpp" line="288"/>
-        <location filename="../iqpuzzle.cpp" line="295"/>
-        <location filename="../iqpuzzle.cpp" line="600"/>
+        <location filename="../iqpuzzle.cpp" line="104"/>
+        <location filename="../iqpuzzle.cpp" line="107"/>
+        <location filename="../iqpuzzle.cpp" line="284"/>
+        <location filename="../iqpuzzle.cpp" line="291"/>
+        <location filename="../iqpuzzle.cpp" line="594"/>
         <source>Time</source>
         <translation>Време</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="112"/>
-        <location filename="../iqpuzzle.cpp" line="285"/>
-        <location filename="../iqpuzzle.cpp" line="292"/>
-        <location filename="../iqpuzzle.cpp" line="360"/>
-        <location filename="../iqpuzzle.cpp" line="599"/>
-        <location filename="../iqpuzzle.cpp" line="788"/>
+        <location filename="../iqpuzzle.cpp" line="108"/>
+        <location filename="../iqpuzzle.cpp" line="281"/>
+        <location filename="../iqpuzzle.cpp" line="288"/>
+        <location filename="../iqpuzzle.cpp" line="354"/>
+        <location filename="../iqpuzzle.cpp" line="593"/>
+        <location filename="../iqpuzzle.cpp" line="785"/>
         <source>Moves</source>
         <translation>Ходове</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="325"/>
-        <source>Load board</source>
-        <translation>Зареждане на дъска</translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.cpp" line="326"/>
-        <source>Board files</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../iqpuzzle.cpp" line="129"/>
-        <location filename="../iqpuzzle.cpp" line="139"/>
-        <location filename="../iqpuzzle.cpp" line="269"/>
-        <location filename="../iqpuzzle.cpp" line="279"/>
+        <location filename="../iqpuzzle.cpp" line="125"/>
+        <location filename="../iqpuzzle.cpp" line="135"/>
+        <location filename="../iqpuzzle.cpp" line="265"/>
+        <location filename="../iqpuzzle.cpp" line="275"/>
         <source>File not found</source>
         <translation>Файлът не е намерен</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="130"/>
-        <location filename="../iqpuzzle.cpp" line="140"/>
-        <location filename="../iqpuzzle.cpp" line="270"/>
-        <location filename="../iqpuzzle.cpp" line="280"/>
+        <location filename="../iqpuzzle.cpp" line="126"/>
+        <location filename="../iqpuzzle.cpp" line="136"/>
+        <location filename="../iqpuzzle.cpp" line="266"/>
+        <location filename="../iqpuzzle.cpp" line="276"/>
         <source>The chosen file does not exist.</source>
         <translation>Избраният файл не съществува.</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="155"/>
+        <location filename="../iqpuzzle.cpp" line="151"/>
         <source>Games share path does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="312"/>
+        <location filename="../iqpuzzle.cpp" line="308"/>
         <source>Unknown</source>
         <translation>Непознат</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="316"/>
+        <location filename="../iqpuzzle.cpp" line="312"/>
         <source>Solutions</source>
         <translation>Решения</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="409"/>
+        <location filename="../iqpuzzle.cpp" line="403"/>
         <source>No boards available!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="494"/>
-        <location filename="../iqpuzzle.cpp" line="528"/>
+        <location filename="../iqpuzzle.cpp" line="488"/>
+        <location filename="../iqpuzzle.cpp" line="522"/>
         <source>Save games</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="508"/>
+        <location filename="../iqpuzzle.cpp" line="502"/>
         <source>Invalid saved puzzle.</source>
         <translation>Неправилно запазен пъзъл.</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="599"/>
+        <location filename="../iqpuzzle.cpp" line="593"/>
         <source>Puzzle solved!</source>
         <translation>Пъзелът е решен!</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="678"/>
+        <location filename="../iqpuzzle.cpp" line="675"/>
         <source>Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="686"/>
-        <location filename="../iqpuzzle.cpp" line="715"/>
+        <location filename="../iqpuzzle.cpp" line="683"/>
+        <location filename="../iqpuzzle.cpp" line="712"/>
         <source>Total</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../iqpuzzle.cpp" line="685"/>
+        <source>Unsolved</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../iqpuzzle.cpp" line="688"/>
-        <source>Unsolved</source>
-        <translation type="unfinished"></translation>
+        <source>Easy</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="716"/>
+        <location filename="../iqpuzzle.cpp" line="696"/>
+        <source>Medium</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../iqpuzzle.cpp" line="704"/>
+        <source>Hard</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../iqpuzzle.cpp" line="713"/>
         <source>including unknown difficulty</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="738"/>
+        <location filename="../iqpuzzle.cpp" line="735"/>
         <source>About</source>
         <translation>Относно</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="752"/>
+        <location filename="../iqpuzzle.cpp" line="749"/>
         <source>License</source>
         <translation>Лиценз</translation>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="755"/>
+        <location filename="../iqpuzzle.cpp" line="752"/>
         <source>This application uses &lt;a href=&quot;https://invent.kde.org/frameworks/breeze-icons&quot;&gt;Breeze icons from KDE&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../iqpuzzle.cpp" line="758"/>
+        <location filename="../iqpuzzle.cpp" line="755"/>
         <source>Translations</source>
         <translation>Преводи</translation>
     </message>
@@ -405,43 +436,43 @@ Reduced grid to default.</source>
         <location filename="../settings.cpp" line="55"/>
         <location filename="../settings.cpp" line="202"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="55"/>
         <location filename="../settings.cpp" line="202"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="55"/>
         <location filename="../settings.cpp" line="202"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="58"/>
         <location filename="../settings.cpp" line="206"/>
         <source>First X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="58"/>
         <location filename="../settings.cpp" line="206"/>
         <source>Second X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../settings.cpp" line="59"/>
-        <location filename="../settings.cpp" line="207"/>
-        <source>Horizontal wheel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="58"/>
         <location filename="../settings.cpp" line="206"/>
         <source>Vertical wheel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../settings.cpp" line="59"/>
+        <location filename="../settings.cpp" line="207"/>
+        <source>Horizontal wheel</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../settings.cpp" line="106"/>
@@ -484,7 +515,7 @@ Reduced grid to default.</source>
     <message>
         <location filename="../settings.ui" line="106"/>
         <source>Use system background color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

@@ -22,8 +22,8 @@ unix: !macx {
        TARGET  = iQPuzzle
 }
 
-win32:VERSION  = 1.2.10.0
-else:VERSION   = 1.2.10
+win32:VERSION  = 1.3.1.0
+else:VERSION   = 1.3.1
 
 QMAKE_TARGET_PRODUCT     = "iQPuzzle"
 QMAKE_TARGET_DESCRIPTION = "IQ challenging pentomino puzzle"
@@ -45,7 +45,7 @@ DEFINES       += QT_NO_FOREACH
 
 CONFIG(debug, debug|release) {
   CONFIG      += warn_on
-  DEFINES     += QT_DISABLE_DEPRECATED_BEFORE=0x060600
+  DEFINES     += QT_DISABLE_DEPRECATED_BEFORE=0x060700
 }
 
 SOURCES       += main.cpp\
@@ -53,6 +53,8 @@ SOURCES       += main.cpp\
                  board.cpp \
                  block.cpp \
                  boarddialog.cpp \
+                 boardpreview.cpp \
+                 boardselection.cpp \
                  highscore.cpp \
                  settings.cpp
 
@@ -60,10 +62,14 @@ HEADERS       += iqpuzzle.h \
                  board.h \
                  block.h \
                  boarddialog.h \
+                 boardpreview.h \
+                 boardselection.h \
                  highscore.h \
                  settings.h
 
 FORMS         += iqpuzzle.ui \
+                 boardpreview.ui \
+                 boardselection.ui \
                  settings.ui
 
 RESOURCES      = data/data.qrc \
@@ -114,8 +120,11 @@ unix: !macx {
     icons.path     = $$PREFIX/share/icons
     icons.files   += icons/hicolor
 
-    man.path       = $$PREFIX/share
-    man.files     += man
+    man.path       = $$PREFIX/share/man
+    # Specify each subfolder - otherwise CMakeLists.txt will be installed
+    man.files     += man/man6
+    man.files     += man/de
+    man.files     += man/it
 
     meta.path      = $$PREFIX/share/metainfo
     meta.files    += data/unix/com.github.elth0r0.iqpuzzle.metainfo.xml
