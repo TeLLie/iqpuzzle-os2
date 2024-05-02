@@ -1,5 +1,19 @@
 History of OS/2-specific changes for iqpuzzle
 ===========================================
+02-05-2024
+v1.3.0 was never finally released due to a packaging issue.
+Version 1.3.1 fixes this issue and is shipping all new features from v1.3.0!
+
+Main changes:
+
+    Add extended board selection dialog
+    Bundle light/dark icons
+    Update application icon
+    Add support for dark scheme on Windows with Qt 6.5
+    Add Cmake support
+    Linux packaging fixes: AppId, metainfo
+
+--------------------------------------------
 10-03-2024
 
 -Updated to latest version 1.2.10
