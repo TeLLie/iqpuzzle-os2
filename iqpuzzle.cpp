@@ -49,7 +49,7 @@
 #endif
 
 #include "./board.h"
-#include "./boarddialog.h"
+#include "./boardselection.h"
 #include "./highscore.h"
 #include "./settings.h"
 #include "ui_iqpuzzle.h"
@@ -59,7 +59,6 @@ IQPuzzle::IQPuzzle(const QDir &userDataDir, const QDir &sharePath,
     : QMainWindow(pParent),
       m_pUi(new Ui::IQPuzzle),
       m_sCurrLang(QString()),
-      m_pBoardDialog(nullptr),
       m_pBoard(nullptr),
       m_sSavedGame(QString()),
       m_userDataDir(userDataDir),
@@ -91,6 +90,11 @@ IQPuzzle::IQPuzzle(const QDir &userDataDir, const QDir &sharePath,
   this->loadLanguage(m_pSettings->getLanguage());
   this->setupMenu();
 
+  this->generateFileLists();  // Run before creating BoardSelection
+  m_pBoardSelection =
+      new BoardSelection(this, m_sSharePath + "/boards", m_sListAllUnsolved,
+                         m_pSettings->getLastOpenedDir());
+
   m_pGraphView = new QGraphicsView(this);
   this->setCentralWidget(m_pGraphView);
   m_pScenePaused = new QGraphicsScene(this);
@@ -108,8 +112,6 @@ IQPuzzle::IQPuzzle(const QDir &userDataDir, const QDir &sharePath,
   m_pStatusLabelMoves = new QLabel(tr("Moves") + ": 0");
   m_pUi->statusBar->addWidget(m_pStatusLabelTime);
   m_pUi->statusBar->addPermanentWidget(m_pStatusLabelMoves);
-
-  this->generateFileLists();
 
   // Choose board via command line
   QString sStartBoard(QLatin1String(""));
@@ -316,17 +318,10 @@ void IQPuzzle::setGameTitle() {
 // ---------------------------------------------------------------------------
 
 auto IQPuzzle::chooseBoard() -> QString {
-  delete m_pBoardDialog;
-  m_pBoardDialog =
-      new BoardDialog(this, tr("Load board"), m_sSharePath + "/boards",
-                      tr("Board files") + " (*.conf)");
-
-  if (m_pBoardDialog->exec()) {
-    QStringList sListFiles;
-    sListFiles = m_pBoardDialog->selectedFiles();
-    if (!sListFiles.isEmpty()) {
-      return sListFiles.first();
-    }
+  if (m_pBoardSelection->exec()) {
+    QString sFile(m_pBoardSelection->getSelectedFile());
+    m_pSettings->setLastOpenedDir(m_pBoardSelection->getLastOpenedDir());
+    return sFile;
   }
 
   return QString();
@@ -564,6 +559,7 @@ void IQPuzzle::setMinWindowSize(const QSize size, const bool bFreestyle) {
   static QSize size2(100, 100);
   if (!size.isEmpty()) {
     size2 = size;
+    this->setMinimumSize(size2);
   }
 
   if (!this->windowState().testFlag(Qt::WindowMaximized) &&
@@ -582,6 +578,46 @@ void IQPuzzle::setMinWindowSize(const QSize size, const bool bFreestyle) {
       m_pGraphView->centerOn(100, 70);
     }
   }
+}
+
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
+void IQPuzzle::changeEvent(QEvent *pEvent) {
+  if (nullptr != pEvent) {
+    if (QEvent::LanguageChange == pEvent->type()) {
+      m_pUi->retranslateUi(this);
+      this->setGameTitle();
+
+      m_pScenePaused->removeItem(m_pTextPaused);
+      QFont font;
+      font.setPixelSize(20);
+      m_pTextPaused = m_pScenePaused->addText(tr("Game paused"), font);
+      this->setMinWindowSize();
+
+      m_pStatusLabelMoves->setText(tr("Moves") + ": " +
+                                   QString::number(m_nMoves));
+      emit updateUiLang();
+    }
+  }
+  QMainWindow::changeEvent(pEvent);
+}
+
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
+void IQPuzzle::resizeEvent(QResizeEvent *pEvent) {
+  if (nullptr != pEvent) {
+    if (!this->windowState().testFlag(Qt::WindowMaximized) &&
+        !this->windowState().testFlag(Qt::WindowFullScreen)) {
+      if (pEvent->size().width() < this->minimumWidth() ||
+          pEvent->size().height() < this->minimumHeight()) {
+        this->showNormal();
+        this->resize(this->minimumSize());
+      }
+    }
+  }
+  QMainWindow::resizeEvent(pEvent);
 }
 
 // ---------------------------------------------------------------------------
@@ -608,18 +644,22 @@ void IQPuzzle::solvedPuzzle() {
 
   // Update "unsolved lists" for random games
   QString sBoard(m_sBoardFile);
-  sBoard = sBoard.remove(m_sSharePath + "/boards/");
-  if (m_sListAllUnsolved.indexOf(sBoard) >= 0) {
-    m_sListAllUnsolved.removeAt(m_sListAllUnsolved.indexOf(sBoard));
-  }
-  if (m_sListEasyUnsolved.indexOf(sBoard) >= 0) {
-    m_sListEasyUnsolved.removeAt(m_sListEasyUnsolved.indexOf(sBoard));
-  }
-  if (m_sListMediumUnsolved.indexOf(sBoard) >= 0) {
-    m_sListMediumUnsolved.removeAt(m_sListMediumUnsolved.indexOf(sBoard));
-  }
-  if (m_sListHardUnsolved.indexOf(sBoard) >= 0) {
-    m_sListHardUnsolved.removeAt(m_sListHardUnsolved.indexOf(sBoard));
+  // Skip update, if board is from user / not from share folder
+  if (sBoard.contains(m_sSharePath + "/boards/", Qt::CaseInsensitive)) {
+    m_pBoardSelection->updateSolved(sBoard);
+    sBoard = sBoard.remove(m_sSharePath + "/boards/");
+    if (m_sListAllUnsolved.indexOf(sBoard) >= 0) {
+      m_sListAllUnsolved.removeAt(m_sListAllUnsolved.indexOf(sBoard));
+    }
+    if (m_sListEasyUnsolved.indexOf(sBoard) >= 0) {
+      m_sListEasyUnsolved.removeAt(m_sListEasyUnsolved.indexOf(sBoard));
+    }
+    if (m_sListMediumUnsolved.indexOf(sBoard) >= 0) {
+      m_sListMediumUnsolved.removeAt(m_sListMediumUnsolved.indexOf(sBoard));
+    }
+    if (m_sListHardUnsolved.indexOf(sBoard) >= 0) {
+      m_sListHardUnsolved.removeAt(m_sListHardUnsolved.indexOf(sBoard));
+    }
   }
 }
 
@@ -764,27 +804,4 @@ void IQPuzzle::showInfoBox() {
                    "&nbsp;&nbsp;- Norwegian: Allan Nordhøy<br />"
                    "&nbsp;&nbsp;- Portuguese (pt & pt_BR): UchidoF<br />"
                    "&nbsp;&nbsp;- Misc. corrections: J. Lavoie"));
-}
-
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-
-void IQPuzzle::changeEvent(QEvent *pEvent) {
-  if (nullptr != pEvent) {
-    if (QEvent::LanguageChange == pEvent->type()) {
-      m_pUi->retranslateUi(this);
-      this->setGameTitle();
-
-      m_pScenePaused->removeItem(m_pTextPaused);
-      QFont font;
-      font.setPixelSize(20);
-      m_pTextPaused = m_pScenePaused->addText(tr("Game paused"), font);
-      this->setMinWindowSize();
-
-      m_pStatusLabelMoves->setText(tr("Moves") + ": " +
-                                   QString::number(m_nMoves));
-      emit updateUiLang();
-    }
-  }
-  QMainWindow::changeEvent(pEvent);
 }
