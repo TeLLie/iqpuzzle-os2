@@ -206,7 +206,8 @@ void Block::moveBlock(const bool bRelease) {
   if (!bRelease) {
     m_bActive = true;
     this->bringToForeground();
-    m_posBlockSelected = this->pos();  // Save last position
+    m_posBlockSelected = this->pos();   // Save last position
+    m_PolyShapeSelected = m_PolyShape;  // Save shape
   } else {
     m_bActive = false;
 
@@ -219,8 +220,8 @@ void Block::moveBlock(const bool bRelease) {
 
     emit incrementMoves();
     if (this->checkCollision(thisPath)) {
-      // Reset position
-      this->setPos(this->snapToGrid(m_posBlockSelected));
+      m_PolyShape = m_PolyShapeSelected;  // Reset shape (flip / rotation)
+      this->setPos(this->snapToGrid(m_posBlockSelected));  // Reset position
       this->checkBlockIntersection();
     } else {
       // Check if puzzle is solved
@@ -234,42 +235,50 @@ void Block::moveBlock(const bool bRelease) {
 
 void Block::rotateBlock(const int nDelta) {
   static const quint8 RIGHTANGLE = 90;
-  qint8 nAngle(0);
-  qreal nTranslateX(0);
-  qreal nTranslateY(0);
+  if (m_bActive || !this->isAnyBlockActive()) {
+    qint8 nAngle(0);
+    qreal nTranslateX(0);
+    qreal nTranslateY(0);
 
-  if (nDelta < 0) {
-    nAngle = RIGHTANGLE;
-    nTranslateX = this->boundingRect().height();
-    nTranslateY = 0;
-  } else {
-    nAngle = -RIGHTANGLE;
-    nTranslateX = 0;
-    nTranslateY = this->boundingRect().width();
+    if (nDelta < 0) {
+      nAngle = RIGHTANGLE;
+      nTranslateX = this->boundingRect().height();
+      nTranslateY = 0;
+    } else {
+      nAngle = -RIGHTANGLE;
+      nTranslateX = 0;
+      nTranslateY = this->boundingRect().width();
+    }
+    this->prepareGeometryChange();
+    // qDebug() << "Before rot.:" << m_nID << nAngle << "\n" << m_PolyShape;
+    m_pTransform->reset();
+    m_pTransform->rotate(nAngle);
+    m_PolyShape = m_pTransform->map(m_PolyShape);     // Rotate
+    m_PolyShape.translate(nTranslateX, nTranslateY);  // Move back
+    // qDebug() << "After rot.:" << m_PolyShape;
   }
-  this->prepareGeometryChange();
-  // qDebug() << "Before rot.:" << m_nID << nAngle << "\n" << m_PolyShape;
-  m_pTransform->reset();
-  m_pTransform->rotate(nAngle);
-  m_PolyShape = m_pTransform->map(m_PolyShape);     // Rotate
-  m_PolyShape.translate(nTranslateX, nTranslateY);  // Move back
-  // qDebug() << "After rot.:" << m_PolyShape;
 
-  this->checkBlockIntersection();
+  if (!this->isAnyBlockActive()) {
+    this->checkBlockIntersection();
+  }
 }
 
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 
 void Block::flipBlock() {
-  this->prepareGeometryChange();
-  // qDebug() << "Before flip" << m_nID << "-" << m_PolyShape;
-  QTransform transform = QTransform::fromScale(-1, 1);
-  m_PolyShape = transform.map(m_PolyShape);                // Flip
-  m_PolyShape.translate(this->boundingRect().width(), 0);  // Move back
-  // qDebug() << "After flip:" << m_PolyShape;
+  if (m_bActive || !this->isAnyBlockActive()) {
+    this->prepareGeometryChange();
+    // qDebug() << "Before flip" << m_nID << "-" << m_PolyShape;
+    QTransform transform = QTransform::fromScale(-1, 1);
+    m_PolyShape = transform.map(m_PolyShape);                // Flip
+    m_PolyShape.translate(this->boundingRect().width(), 0);  // Move back
+    // qDebug() << "After flip:" << m_PolyShape;
+  }
 
-  this->checkBlockIntersection();
+  if (!this->isAnyBlockActive()) {
+    this->checkBlockIntersection();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -379,6 +388,18 @@ void Block::rescaleBlock(const quint16 nNewScale) {
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 
+auto Block::isAnyBlockActive() -> bool {
+  for (auto &pBlock : *m_pListBlocks) {
+    if (pBlock->isActive()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
 auto Block::type() const -> int {
   // Enable the use of qgraphicsitem_cast with this item
   return Type;
@@ -387,6 +408,8 @@ auto Block::type() const -> int {
 auto Block::getIndex() const -> quint16 { return m_nID; }
 
 auto Block::isBarrier() const -> bool { return m_bBarrier; }
+
+auto Block::isActive() const -> bool { return m_bActive; }
 
 auto Block::getPosition() const -> QPointF { return this->pos(); }
 

@@ -71,20 +71,31 @@ IQPuzzle::IQPuzzle(const QDir &userDataDir, const QDir &sharePath,
   qDebug() << Q_FUNC_INFO;
   m_pUi->setupUi(this);
 
-  QString sIconTheme = QStringLiteral("light");
+  QString sIconTheme;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+  qDebug() << "Detected color scheme:"
+           << QGuiApplication::styleHints()->colorScheme();
   if (Qt::ColorScheme::Dark == QGuiApplication::styleHints()->colorScheme()) {
     sIconTheme = QStringLiteral("dark");
-  }
-#else
-  if (this->window()->palette().window().color().lightnessF() < 0.5) {
-    sIconTheme = QStringLiteral("dark");
+  } else if (Qt::ColorScheme::Light ==
+             QGuiApplication::styleHints()->colorScheme()) {
+    sIconTheme = QStringLiteral("light");
   }
 #endif
+  // If < Qt 6.5 or if Qt::ColorScheme::Unknown was returned
+  if (sIconTheme.isEmpty()) {
+    // If window is darker than text
+    if (this->window()->palette().window().color().lightnessF() <
+        this->window()->palette().windowText().color().lightnessF()) {
+      sIconTheme = QStringLiteral("dark");
+    } else {
+      sIconTheme = QStringLiteral("light");
+    }
+  }
   QIcon::setThemeName(sIconTheme);
 
-  m_pHighscore = new Highscore();
-  m_pSettings = new Settings(m_sSharePath, this);
+  m_pHighscore = new Highscore(this);
+  m_pSettings = new Settings(this, m_sSharePath);
   connect(m_pSettings, &Settings::changeLang, this, &IQPuzzle::loadLanguage);
   connect(this, &IQPuzzle::updateUiLang, m_pSettings, &Settings::updateUiLang);
   this->loadLanguage(m_pSettings->getLanguage());
@@ -114,8 +125,8 @@ IQPuzzle::IQPuzzle(const QDir &userDataDir, const QDir &sharePath,
   m_pUi->statusBar->addPermanentWidget(m_pStatusLabelMoves);
 
   // Choose board via command line
-  QString sStartBoard(QLatin1String(""));
-  QString sLoadBoard(QLatin1String(""));
+  QString sStartBoard;
+  QString sLoadBoard;
   if (qApp->arguments().size() > 1) {
     for (auto &sBoard : qApp->arguments()) {
       if (sBoard.endsWith(QStringLiteral(".conf"), Qt::CaseInsensitive)) {
@@ -291,7 +302,7 @@ void IQPuzzle::startNewGame(QString sBoardFile, const QString &sSavedGame,
     m_Time = QTime::fromString(QStringLiteral("00:00:00"),
                                QStringLiteral("hh:mm:ss"));
     m_pStatusLabelTime->setText(tr("Time") + ": 00:00:00");
-    m_sSavedGame = QLatin1String("");
+    m_sSavedGame.clear();
   }
 
   this->setGameTitle();
@@ -339,7 +350,7 @@ void IQPuzzle::createBoard() {
   }
   delete m_pBoard;
 
-  m_pBoard = new Board(m_pGraphView, m_sBoardFile, m_pSettings, nGridSize,
+  m_pBoard = new Board(this, m_pGraphView, m_sBoardFile, m_pSettings, nGridSize,
                        m_sSavedGame);
   sPreviousBoard = m_sBoardFile;
   connect(m_pBoard, &Board::setWindowSize, this, &IQPuzzle::setMinWindowSize);
@@ -518,8 +529,8 @@ void IQPuzzle::saveGame() {
                                                m_userDataDir.absolutePath(),
                                                tr("Save games") + "(*.iqsav)");
   if (!sFile.isEmpty()) {
-    if (!sFile.endsWith(QLatin1String(".iqsav"), Qt::CaseInsensitive)) {
-      sFile += QLatin1String(".iqsav");
+    if (!sFile.endsWith(QStringLiteral(".iqsav"), Qt::CaseInsensitive)) {
+      sFile += QStringLiteral(".iqsav");
     }
     m_sSavedMoves = QString::number(m_nMoves);
     m_sSavedTime = m_Time.toString(QStringLiteral("hh:mm:ss"));
@@ -803,5 +814,6 @@ void IQPuzzle::showInfoBox() {
                    "&nbsp;&nbsp;- Korean: hyuna1127<br />"
                    "&nbsp;&nbsp;- Norwegian: Allan Nordhøy<br />"
                    "&nbsp;&nbsp;- Portuguese (pt & pt_BR): UchidoF<br />"
+                   "&nbsp;&nbsp;- Russian: cheelp<br />"
                    "&nbsp;&nbsp;- Misc. corrections: J. Lavoie"));
 }

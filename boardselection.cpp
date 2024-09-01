@@ -68,14 +68,17 @@ BoardSelection::BoardSelection(QWidget *pParent, const QString &sBoardsDir,
 
     QDir dir(m_sBoardsDir + "/" + sSubfolder);
     const QStringList boardfiles =
-        dir.entryList(QStringList() << QLatin1String("*.conf"),
+        dir.entryList(QStringList() << QStringLiteral("*.conf"),
                       QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
     int nCol = 0;
     int nRow = 0;
+    quint16 nSolved = 0;
+    quint16 nSum = 0;
+    bool bSolved;
     for (const auto &board : boardfiles) {
       QString sFile(sSubfolder + "/" + board);
-      m_pListBoards << new BoardPreview(m_sBoardsDir + "/" + sFile,
-                                        !m_sListAllUnsolved.contains(sFile),
+      bSolved = !m_sListAllUnsolved.contains(sFile);
+      m_pListBoards << new BoardPreview(m_sBoardsDir + "/" + sFile, bSolved,
                                         m_previewsize);
       m_pListTabLayouts.last()->addWidget(m_pListBoards.last(), nRow, nCol);
 
@@ -87,10 +90,19 @@ BoardSelection::BoardSelection(QWidget *pParent, const QString &sBoardsDir,
         nCol = 0;
         nRow++;
       }
+
+      if (bSolved) {
+        nSolved++;
+      }
+      nSum++;
     }
 
     sSubfolder[0] = sSubfolder[0].toUpper();
     sSubfolder = sSubfolder.replace('_', ' ');
+    if (sSubfolder != QStringLiteral("Freestyle")) {
+      sSubfolder +=
+          " (" + QString::number(nSolved) + "/" + QString::number(nSum) + ")";
+    }
     m_pUi->tabWidget->addTab(m_pListTabScrollArea.last(), sSubfolder);
   }
 
@@ -144,11 +156,40 @@ auto BoardSelection::getLastOpenedDir() -> const QString {
 }
 
 void BoardSelection::updateSolved(const QString &sBoard) {
+  QString sFileName;
   for (auto board : m_pListBoards) {
     QFileInfo fi(sBoard);
-    if (fi.baseName() == board->getName()) {
+    sFileName = fi.baseName();
+    if (sFileName == board->getName()) {
       board->updateSolved();
       break;
     }
+  }
+
+  QDir boardsDir(m_sBoardsDir);
+  const QStringList sListSubfolders =
+      boardsDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+
+  sFileName += QStringLiteral(".conf");
+  quint8 nTab = 0;
+  for (const auto &sSubfolder : sListSubfolders) {
+    QDir dir(m_sBoardsDir + "/" + sSubfolder);
+    const QStringList boardfiles =
+        dir.entryList(QStringList() << QStringLiteral("*.conf"),
+                      QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+
+    if (boardfiles.contains(sFileName)) {
+      QString sTabName = m_pUi->tabWidget->tabText(nTab);
+      quint8 i1 = sTabName.lastIndexOf('(') + 1;
+      quint8 i2 = sTabName.lastIndexOf('/');
+      QString sCurrent = sTabName.mid(i1, i2 - i1);
+      // Potentially there was & added automatically
+      sCurrent = sCurrent.remove('&');
+      uint nSolved = sCurrent.toUInt() + 1;
+      sTabName = sTabName.replace(i1, i2 - i1, QString::number(nSolved));
+      m_pUi->tabWidget->setTabText(nTab, sTabName);
+      break;
+    }
+    nTab++;
   }
 }
