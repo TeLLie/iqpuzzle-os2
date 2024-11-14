@@ -125,9 +125,11 @@ void Block::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 // ---------------------------------------------------------------------------
 
 void Block::mousePressEvent(QGraphicsSceneMouseEvent *p_Event) {
+  quint32 button = p_Event->button();
   this->resetBrushStyle();
+  if (button == Qt::LeftButton) button |= p_Event->modifiers();
 
-  int nIndex(m_pSettings->getMouseControls().indexOf(p_Event->button()));
+  int nIndex(m_pSettings->getMouseControls().indexOf(button));
   if (nIndex >= 0) {
     switch (nIndex) {
       case 0:
@@ -235,7 +237,7 @@ void Block::moveBlock(const bool bRelease) {
 
 void Block::rotateBlock(const int nDelta) {
   static const quint8 RIGHTANGLE = 90;
-  if (m_bActive || !this->isAnyBlockActive()) {
+  if (m_bActive || !this->isAnyBlockActive(m_pListBlocks)) {
     qint8 nAngle(0);
     qreal nTranslateX(0);
     qreal nTranslateY(0);
@@ -258,7 +260,7 @@ void Block::rotateBlock(const int nDelta) {
     // qDebug() << "After rot.:" << m_PolyShape;
   }
 
-  if (!this->isAnyBlockActive()) {
+  if (!this->isAnyBlockActive(m_pListBlocks)) {
     this->checkBlockIntersection();
   }
 }
@@ -267,7 +269,7 @@ void Block::rotateBlock(const int nDelta) {
 // ---------------------------------------------------------------------------
 
 void Block::flipBlock() {
-  if (m_bActive || !this->isAnyBlockActive()) {
+  if (m_bActive || !this->isAnyBlockActive(m_pListBlocks)) {
     this->prepareGeometryChange();
     // qDebug() << "Before flip" << m_nID << "-" << m_PolyShape;
     QTransform transform = QTransform::fromScale(-1, 1);
@@ -276,7 +278,7 @@ void Block::flipBlock() {
     // qDebug() << "After flip:" << m_PolyShape;
   }
 
-  if (!this->isAnyBlockActive()) {
+  if (!this->isAnyBlockActive(m_pListBlocks)) {
     this->checkBlockIntersection();
   }
 }
@@ -388,8 +390,8 @@ void Block::rescaleBlock(const quint16 nNewScale) {
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 
-auto Block::isAnyBlockActive() -> bool {
-  for (auto &pBlock : *m_pListBlocks) {
+auto Block::isAnyBlockActive(const QList<Block *> *listBlocks) -> bool {
+  for (const auto pBlock : *listBlocks) {
     if (pBlock->isActive()) {
       return true;
     }

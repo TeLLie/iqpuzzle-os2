@@ -196,8 +196,8 @@ auto Board::setupBlocks() -> bool {
 // ---------------------------------------------------------------------------
 
 auto Board::createBlocks() -> bool {
-  const unsigned char nMaxNumOfBlocks(250);
-  QSettings *tmpSet = m_pBoardConf;
+  const quint8 nMaxNumOfBlocks(250);
+  const QSettings *tmpSet = m_pBoardConf;
   if (m_bSavedGame) {
     tmpSet = m_pSavedConf;
   }
@@ -246,7 +246,7 @@ auto Board::createBlocks() -> bool {
 // ---------------------------------------------------------------------------
 
 auto Board::createBarriers() -> bool {
-  const unsigned char nMaxNumOfBlocks(250);
+  const quint8 nMaxNumOfBlocks(250);
   QColor cBG(this->readColor(QStringLiteral("BGColor")));
 
   for (quint16 i = 1; i <= nMaxNumOfBlocks; i++) {
@@ -284,8 +284,8 @@ auto Board::createBarriers() -> bool {
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 
-auto Board::readColor(const QString &sKey, const bool bColorIsBoardBG) const
-    -> QColor {
+auto Board::readColor(const QString &sKey,
+                      const bool bColorIsBoardBG) const -> QColor {
   if (bColorIsBoardBG && m_pSettings->getUseSystemBackground()) {
     return QApplication::palette().color(QPalette::Base);
   }
@@ -321,7 +321,6 @@ auto Board::readColor(const QString &sKey, const bool bColorIsBoardBG) const
 
 auto Board::readPolygon(const QSettings *tmpSet, const QString &sKey,
                         const bool bScale) -> QPolygonF {
-  QStringList sList;
   QStringList sListPoint;
   QString sValue(tmpSet->value(sKey, "").toString());
   quint16 nScale(1);
@@ -330,10 +329,10 @@ auto Board::readPolygon(const QSettings *tmpSet, const QString &sKey,
   }
 
   Board::checkOrthogonality(QPointF(-99999, -99999));
-  sList << sValue.split('|');
+  const QStringList sList(sValue.split('|'));
   QPolygonF polygon;
   polygon.reserve(sList.size());
-  for (auto &s : sList) {
+  for (const auto &s : sList) {
     sListPoint.clear();
     sListPoint << s.split(',');
     if (2 == sListPoint.size()) {

@@ -34,9 +34,7 @@
 #include "ui_settings.h"
 
 Settings::Settings(QWidget *pParent, QString sSharePath)
-    : QDialog(pParent),
-      m_pParent(pParent),
-      m_sSharePath(std::move(sSharePath)) {
+    : QDialog(pParent), m_sSharePath(std::move(sSharePath)) {
   qDebug() << Q_FUNC_INFO;
 
   m_pUi = new Ui::SettingsDialog();
@@ -58,10 +56,18 @@ Settings::Settings(QWidget *pParent, QString sSharePath)
   m_listMouseButtons << Qt::LeftButton << Qt::MiddleButton << Qt::RightButton;
   m_pUi->cbMoveBlockMouse->addItems(m_sListMouseButtons);
   m_sListMouseButtons << tr("First X") << tr("Second X") << tr("Vertical wheel")
-                      << tr("Horizontal wheel");
+                      << tr("Horizontal wheel")
+                      << tr("Left") + " + " + tr("Shift")
+                      << tr("Left") + " + " + tr("Ctrl")
+                      << tr("Left") + " + " + tr("Alt")
+                      << tr("Left") + " + " + tr("Meta");
   m_listMouseButtons << Qt::XButton1 << Qt::XButton2
                      << (quint8(Qt::Vertical) | nSHIFT)
-                     << (quint8(Qt::Horizontal) | nSHIFT);
+                     << (quint8(Qt::Horizontal) | nSHIFT)
+                     << ((quint32)Qt::LeftButton | Qt::ShiftModifier)
+                     << ((quint32)Qt::LeftButton | Qt::ControlModifier)
+                     << ((quint32)Qt::LeftButton | Qt::AltModifier)
+                     << ((quint32)Qt::LeftButton | Qt::MetaModifier);
   m_pUi->cbRotateBlockMouse->addItems(m_sListMouseButtons);
   m_pUi->cbFlipBlockMouse->addItems(m_sListMouseButtons);
 
@@ -104,7 +110,7 @@ void Settings::accept() {
   if (tmp_listMouseControls[0] == tmp_listMouseControls[1] ||
       tmp_listMouseControls[0] == tmp_listMouseControls[2] ||
       tmp_listMouseControls[1] == tmp_listMouseControls[2]) {
-    QMessageBox::warning(m_pParent, this->windowTitle(),
+    QMessageBox::warning(this, this->windowTitle(),
                          tr("Please change your settings. Same mouse "
                             "button is used for several actions."));
     return;
@@ -206,7 +212,11 @@ void Settings::updateUiLang() {
   m_pUi->cbMoveBlockMouse->addItems(m_sListMouseButtons);
 
   m_sListMouseButtons << tr("First X") << tr("Second X") << tr("Vertical wheel")
-                      << tr("Horizontal wheel");
+                      << tr("Horizontal wheel")
+                      << tr("Left") + " + " + tr("Shift")
+                      << tr("Left") + " + " + tr("Ctrl")
+                      << tr("Left") + " + " + tr("Alt")
+                      << tr("Left") + " + " + tr("Meta");
   m_pUi->cbRotateBlockMouse->clear();
   m_pUi->cbRotateBlockMouse->addItems(m_sListMouseButtons);
   m_pUi->cbFlipBlockMouse->clear();
