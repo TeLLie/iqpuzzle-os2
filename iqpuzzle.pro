@@ -22,8 +22,8 @@ unix: !macx {
        TARGET  = iQPuzzle
 }
 
-win32:VERSION  = 1.4.0.0
-else:VERSION   = 1.4.0
+win32:VERSION  = 1.4.1.0
+else:VERSION   = 1.4.1
 
 QMAKE_TARGET_PRODUCT     = "iQPuzzle"
 QMAKE_TARGET_DESCRIPTION = "IQ challenging pentomino puzzle"
@@ -45,7 +45,7 @@ DEFINES       += QT_NO_FOREACH
 
 CONFIG(debug, debug|release) {
   CONFIG      += warn_on
-  DEFINES     += QT_DISABLE_DEPRECATED_BEFORE=0x060700
+  DEFINES     += QT_DISABLE_DEPRECATED_BEFORE=0x060800
 }
 
 SOURCES       += main.cpp\

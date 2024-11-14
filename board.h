@@ -72,8 +72,8 @@ class Board : public QGraphicsScene {
   void drawGrid();
   auto createBlocks() -> bool;
   auto createBarriers() -> bool;
-  auto readColor(const QString &sKey, const bool bColorIsBoardBG = false) const
-      -> QColor;
+  auto readColor(const QString &sKey,
+                 const bool bColorIsBoardBG = false) const -> QColor;
   QPolygonF readPolygon(const QSettings *tmpSet, const QString &sKey,
                         const bool bScale = false);
   static auto checkOrthogonality(QPointF point) -> bool;
@@ -90,7 +90,7 @@ class Board : public QGraphicsScene {
   bool m_bSavedGame;
   QPolygonF m_BoardPoly;
   QList<Block *> m_listBlocks;
-  unsigned char m_nNumOfBlocks{};
+  quint8 m_nNumOfBlocks{};
   quint16 m_nGridSize;
   bool m_bNotAllPiecesNeeded{};
   bool m_bFreestyle{};
