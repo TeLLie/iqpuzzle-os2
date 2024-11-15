@@ -1,8 +1,13 @@
 History of OS/2-specific changes for iqpuzzle
 ===========================================
-* [Build for OS/2](http://www.ecsoft2.org/iqpuzzle)
-01-09-2024
 
+* [Build for OS/2](http://www.ecsoft2.org/iqpuzzle)
+v1.4.1 (13. Nov 2024)
+Enabled modifier keys on the first mouse button (thanks to spillner)
+
+-----------------------------------------------------------------------
+01-09-2024
+v1.4.0
 Main changes:
 
 Add more than 50 new boards
