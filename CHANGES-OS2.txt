@@ -1,6 +1,11 @@
 History of OS/2-specific changes for iqpuzzle
 ===========================================
+v1.4.2 (02. Mar 2025)
+Update Chinese (zh_CN, zh_TW) translation (thanks to liulitchi)
+Retranslate board selection dialog without application restart
+Improve Windows installer: Add languages; remove previous files
 
+-------------------------------------------------------------------
 * [Build for OS/2](http://www.ecsoft2.org/iqpuzzle)
 v1.4.1 (13. Nov 2024)
 Enabled modifier keys on the first mouse button (thanks to spillner)
